@@ -15,7 +15,7 @@ Save.get('PostsArray', function(res){
 		} else {
 			el.addEventListener('click', function(){
 				PostsArray.push(id);
-				Save.set({'PostsArray': data}, function(){
+				Save.set({'PostsArray': PostsArray}, function(){
 					setPurple(id);
 				})
 			})
@@ -31,8 +31,10 @@ DomReady.ready(function(){
 chrome.storage.onChanged.addListener(function(changes, namespace){
 	for (key in changes){
 		var change = changes[key];
+		console.log(key)
 		if (key == 'PostsArray'){
-			PostsArray = changes.newValue;
+			PostsArray = change.newValue;
+			console.log(change.newValue);
 		}
 	}
 })
