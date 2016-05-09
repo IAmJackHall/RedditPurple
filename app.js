@@ -1,39 +1,60 @@
-var EXPIRATION_LIMIT = 2;
+var Save = chrome.storage.sync;
+var PostsArray;
+// Grab our data;
+Save.get('PostsArray', function(res){
+	PostsArray = res.PostsArray || [];
+	NodeWatch.watchSelector('.expando-button', function(el){
+		// IDs of each newly found link;
+		var id = el.parentElement.parentElement.id
 
+		// If the id has already been stored
+		if (PostsArray.indexOf(id) >= 0){
+			setPurple(id);
 
-if (!Cookies.get('jack-data')){
-	Cookies.set('jack-data', [], {expires: EXPIRATION_LIMIT});
-}
-// Runs through all the existing Ids and sets them to purple
-function setPurple(){
-	var data = typeof arguments[0] == 'object' ? arguments[0] : Cookies.getJSON('jack-data');
-	for (var i = 0; i < data.length; i++){
-		var id = data[i];
-		var el = document.getElementById(id);
-		// If the video exists on this page
-		if (el){
-			el.querySelector('p.title a').style.color = "#551a8b"
-		}	
-	}
-}
-// This will be called as new buttons appear
-NodeWatch.watchSelector('.expando-button', function(el){
-	var id = el.parentElement.parentElement.id
-	var master_data = Cookies.getJSON('jack-data');
-	// If the id is already stored
-	if (master_data.indexOf(id) >= 0) {
-		el.previousSibling.querySelector('a').style.color = "#551a8b"
+		// Otherwise Add an event Listener
+		} else {
+			el.addEventListener('click', function(){
+				PostsArray.push(id);
+				Save.set({'PostsArray': data}, function(){
+					setPurple(id);
+				})
+			})
+		}
+	})
+})
 
-	// Otherwise attach an event listener
-	} else {
-		el.addEventListener('click', function(){
-			var data = Cookies.getJSON('jack-data');
-			data.push(id);
-			Cookies.set('jack-data', data, {expires: EXPIRATION_LIMIT});
-			el.previousSibling.querySelector('a').style.color = "#551a8b"
-		})
-	}
-});
 DomReady.ready(function(){
 	setPurple();
 })
+
+// This will keep the Data variable updated as you make changes
+chrome.storage.onChanged.addListener(function(changes, namespace){
+	for (key in changes){
+		var change = changes[key];
+		if (key == 'PostsArray'){
+			PostsArray = changes.newValue;
+		}
+	}
+})
+
+
+// Make dem links purple
+function setPurple(){
+	if (typeof arguments[0] == 'string'){
+		var el = document.getElementById(arguments[0]);
+		if (el){
+			el.querySelector('p.title a').style.color = "#551a8b";
+		} 
+	// Otherwise run through the whole shebang
+	} else {
+		for (var i = 0; i < PostsArray.length; i++){
+			var id = PostsArray[i];
+			var el = document.getElementById(id);
+			// If the link still exists on this page
+			// Reaction to RES never ending page
+			if (el){
+				el.querySelector('p.title a').style.color = "#551a8b"
+			}	
+		}
+	}
+}
