@@ -6,20 +6,20 @@ Save.get('PostsArray', function(res){
 	NodeWatch.watchSelector('.expando-button', function(el){
 		// IDs of each newly found link;
 		var id = el.parentElement.parentElement.id
+		el.addEventListener('click', function(){
+			// If the id has already been stored
+			// Just set the link to purple
+			if (PostsArray.indexOf(id) >= 0){
+				setPurple(id);
 
-		// If the id has already been stored
-		if (PostsArray.indexOf(id) >= 0){
-			setPurple(id);
-
-		// Otherwise Add an event Listener
-		} else {
-			el.addEventListener('click', function(){
+			// Otherwise update the DB
+			} else {
 				PostsArray.push(id);
 				Save.set({'PostsArray': PostsArray}, function(){
 					setPurple(id);
-				})
-			})
-		}
+				})	
+			}
+		})
 	})
 })
 
@@ -31,10 +31,9 @@ DomReady.ready(function(){
 chrome.storage.onChanged.addListener(function(changes, namespace){
 	for (key in changes){
 		var change = changes[key];
-		console.log(key)
 		if (key == 'PostsArray'){
 			PostsArray = change.newValue;
-			console.log(change.newValue);
+			'PostsArray has been updated';
 		}
 	}
 })

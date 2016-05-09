@@ -8,10 +8,14 @@
 		var result = time - lastStoredTime;
 		// If the last time this was set is greater
 		// Than the expiration time OR there is no last stored 
-		// Time. Remove PostsArray and set a new date
+		// Time. Reset PostsArray and set a new date
+		// Note this will reset PostsArray even if no lastStoredTime 
+		// Was initiated
 		if (result >= EXPIRATION_DATE || !res.lastStoredTime){
-			Save.remove('PostsArray');
-			Save.set({'lastStoredTime': Date.now()});
+			Save.set({
+				'lastStoredTime': Date.now(),
+				'PostsArray': []
+			});
 		}
 	})
 }())

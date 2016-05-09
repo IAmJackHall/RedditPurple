@@ -6,7 +6,7 @@
   "content_scripts": [
     {
       "matches": ["http://www.reddit.com/*", "https://www.reddit.com/*"],
-      "js": ["nodewatch.js", "domready.js", "cookie.js", "app.js"]
+      "js": ["nodewatch.js", "domready.js", "app.js", "cleanup.js"]
     }
   ],
   "permissions": [
