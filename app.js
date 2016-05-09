@@ -35,6 +35,14 @@ chrome.storage.onChanged.addListener(function(changes, namespace){
 		if (key == 'PostsArray'){
 			PostsArray = change.newValue;
 			'PostsArray has been updated';
+			// Live update Purple links accross browsers
+			for (var i = 0; i < change.newValue.length; i++){
+				var id = change.newValue[i];
+				if (!change.oldValue.indexOf(id) >= 0){
+					setPurple(id);
+				}
+			}
+
 		}
 	}
 })
