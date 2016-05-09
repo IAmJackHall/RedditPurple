@@ -1,0 +1,12 @@
+{
+  "manifest_version": 2,
+  "version": "1.0",
+  "description": "Reddit Sync: Turn those damn video links purple",
+  "name": "Reddit Sync",
+  "content_scripts": [
+    {
+      "matches": ["http://www.reddit.com/*", "https://www.reddit.com/*"],
+      "js": ["nodewatch.js", "domready.js", "cookie.js", "app.js"]
+    }
+  ]
+}
