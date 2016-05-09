@@ -14,6 +14,7 @@ Save.get('PostsArray', function(res){
 
 			// Otherwise update the DB
 			} else {
+				// Probably Don't need to push, but doing it anyways
 				PostsArray.push(id);
 				Save.set({'PostsArray': PostsArray}, function(){
 					setPurple(id);
